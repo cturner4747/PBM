@@ -18,8 +18,7 @@ PBM_MAP = {
 }
 
 @st.cache_data
- def clean_and_extract(text: str):
-    # Split lines
+def clean_and_extract(text: str):
     lines = text.splitlines()
     header = None
     clean_lines = []
@@ -39,19 +38,16 @@ PBM_MAP = {
     return header, clean_lines
 
 @st.cache_data
- def parse_dataframe(header: str, lines: list[str]):
-    # Determine delimiter
+def parse_dataframe(header: str, lines: list[str]):
     delimiter = "\t" if "\t" in header else ","
     csv_data = header + "\n" + "\n".join(lines)
     df = pd.read_csv(StringIO(csv_data), sep=delimiter, dtype=str)
-    # Keep only numeric Rx rows
     df = df[df["Rx"].str.strip().str.isnumeric()]
     return df
 
 @st.cache_data
- def format_reports(df: pd.DataFrame, base_name: str) -> dict[str, bytes]:
+def format_reports(df: pd.DataFrame, base_name: str) -> dict[str, bytes]:
     outputs = {}
-    # Group by PBM based on BIN column
     for bin_val, group in df.groupby("BIN"):
         pbm_name = PBM_MAP.get(bin_val.strip(), "PSAO Other")
         out_df = group.reset_index(drop=True)
@@ -82,7 +78,6 @@ if uploaded:
         out_files = format_reports(df, report.name)
         all_outputs.update(out_files)
     if all_outputs:
-        # Create ZIP
         zip_buf = BytesIO()
         with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zipf:
             for fname, data in all_outputs.items():
@@ -96,6 +91,6 @@ if uploaded:
         )
     else:
         st.info("No formatted files generated.")
-
 else:
-    st.info("Awaiting report upload...")
+    st.info("Awaiting report upload…")
+
