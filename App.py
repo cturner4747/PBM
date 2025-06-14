@@ -18,38 +18,58 @@ PBM_MAP = {
 }
 
 @st.cache_data
+
 def clean_and_extract(text: str):
+    """
+    Strip out report preamble, page breaks, and repeated headers.
+    Returns the header line and cleaned data lines.
+    """
     lines = text.splitlines()
     header = None
     clean_lines = []
     for line in lines:
-        # Detect header row
-        if re.match(r"^Rx[\t,]Patient", line):
+        # Identify header row by presence of key columns
+        if re.search(r"\bRx\b", line) and "NDC" in line and "Fill Date" in line:
             header = line.strip()
             continue
-        # Skip metadata and repeated headers
-        if not header or line.startswith("West Gate Pharmacy") or line.startswith("Rx Gross Profit Detail"):
+        if not header:
+            # skip until header found
             continue
-        if line.startswith("Transaction Status") or line.startswith("Page ") or line.startswith("Total"):
+        # Skip metadata and repeated headers or page markers
+        if line.startswith("Page ") or line.startswith("West Gate Pharmacy"):
+            continue
+        if line.startswith("Rx Gross Profit Detail") or line.startswith("\"Transaction Status"):
             continue
         if line.strip() == header:
+            continue
+        if line.strip() == "":
             continue
         clean_lines.append(line)
     return header, clean_lines
 
 @st.cache_data
+
 def parse_dataframe(header: str, lines: list[str]):
-    delimiter = "\t" if "\t" in header else ","
-    csv_data = header + "\n" + "\n".join(lines)
-    df = pd.read_csv(StringIO(csv_data), sep=delimiter, dtype=str)
+    """
+    Build a pandas DataFrame from header and clean lines.
+    """
+    # Determine delimiter
+    delimiter = "," if "," in header else "\t"
+    csv_text = header + "\n" + "\n".join(lines)
+    df = pd.read_csv(StringIO(csv_text), sep=delimiter, dtype=str)
+    # Keep only numeric Rx rows
     df = df[df["Rx"].str.strip().str.isnumeric()]
     return df
 
 @st.cache_data
+
 def format_reports(df: pd.DataFrame, base_name: str) -> dict[str, bytes]:
+    """
+    Splits DataFrame by PBM (via BIN) and returns dict of filename->bytes.
+    """
     outputs = {}
     for bin_val, group in df.groupby("BIN"):
-        pbm_name = PBM_MAP.get(bin_val.strip(), "PSAO Other")
+        pbm_name = PBM_MAP.get(bin_val.strip(), "OtherPBM")
         out_df = group.reset_index(drop=True)
         buf = BytesIO()
         out_df.to_excel(buf, index=False)
@@ -59,7 +79,7 @@ def format_reports(df: pd.DataFrame, base_name: str) -> dict[str, bytes]:
     return outputs
 
 st.title("📦 PBM Report Formatter")
-st.markdown("Upload a PioneerRx report (.txt) and get formatted Excel files per PBM bundled in a ZIP.")
+st.markdown("Upload PioneerRx .txt reports; receive a ZIP of PBM-formatted Excel files.")
 
 uploaded = st.file_uploader("Choose report files", type="txt", accept_multiple_files=True)
 
@@ -69,7 +89,7 @@ if uploaded:
         raw = report.read().decode("utf-8", errors="ignore")
         header, lines = clean_and_extract(raw)
         if not header or not lines:
-            st.warning(f"No valid data found in {report.name}")
+            st.warning(f"No valid data in {report.name}")
             continue
         df = parse_dataframe(header, lines)
         if df.empty:
@@ -84,7 +104,7 @@ if uploaded:
                 zipf.writestr(fname, data)
         zip_buf.seek(0)
         st.download_button(
-            label="📥 Download Formatted Reports as ZIP",
+            label="📥 Download Formatted Reports ZIP",
             data=zip_buf,
             file_name="formatted_reports.zip",
             mime="application/zip"
@@ -92,5 +112,6 @@ if uploaded:
     else:
         st.info("No formatted files generated.")
 else:
-    st.info("Awaiting report upload…")
+    st.info("Awaiting .txt report upload...")
+
 
