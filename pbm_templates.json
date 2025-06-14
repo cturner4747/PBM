@@ -1,0 +1,55 @@
+{
+  "Caremark": {
+    "required_fields": [
+      "Rx Number",
+      "Fill Date",
+      "NDC",
+      "Drug Name",
+      "Quantity",
+      "Days Supply",
+      "Invoice Cost",
+      "Paid Amount",
+      "Profit/Loss",
+      "Plan Name",
+      "BIN",
+      "PCN",
+      "Payer ID",
+      "Prescriber NPI",
+      "Pharmacy NPI",
+      "Patient Name",
+      "DOB",
+      "Appeal Reason",
+      "Supporting Documents"
+    ],
+    "format_notes": "Must use their online portal or fax form with all required fields."
+  },
+  "MedImpact": {
+    "required_fields": [
+      "Rx Number",
+      "Fill Date",
+      "NDC",
+      "Drug Name",
+      "Quantity",
+      "Days Supply",
+      "Invoice Cost",
+      "Paid Amount",
+      "Plan Name",
+      "Payer ID",
+      "Appeal Reason"
+    ],
+    "format_notes": "CSV file can be uploaded through provider dashboard."
+  },
+  "Express Scripts": {
+    "required_fields": [
+      "Rx Number",
+      "Fill Date",
+      "Drug Name",
+      "Invoice Cost",
+      "Paid Amount",
+      "Appeal Reason",
+      "Prescriber NPI",
+      "Pharmacy NPI"
+    ],
+    "format_notes": "Appeals must be submitted through their proprietary system."
+  }
+}
