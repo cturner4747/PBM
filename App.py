@@ -41,8 +41,9 @@ if uploaded_file:
         st.error(f"❌ Failed to load BIN mapping: {e}")
         st.stop()
 
-    # BIN Routing Preview
-    st.markdown("### 🧠 BIN Routing Preview")
+st.markdown("### 🧠 BIN Routing Preview")
+
+if isinstance(parsed_data, pd.DataFrame):
     bin_column_name = next((col for col in parsed_data.columns if "bin" in str(col).lower()), None)
 
     if bin_column_name:
@@ -52,5 +53,8 @@ if uploaded_file:
             pbm_info = get_pbm_info(bin_val, bin_map)
             st.markdown(f"- BIN `{bin_val}` ➜ **{pbm_info['pbm']}** — {pbm_info['line_of_business']}")
     else:
-        st.info("No BIN column detected or file type does not support preview.")
+        st.info("No BIN column detected.")
+else:
+    st.info("This file type is not structured for BIN routing preview.")
+
 
