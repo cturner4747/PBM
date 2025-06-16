@@ -1,0 +1,92 @@
+{
+  "610494": {
+    "pbm": "OptumRx",
+    "pcns": ["9999"],
+    "line_of_business": "Commercial & Medicaid",
+    "notes": "OptumRx standard BIN"
+  },
+  "610613": {
+    "pbm": "OptumRx",
+    "pcns": ["2417"],
+    "line_of_business": "Community Health",
+    "notes": "Specialized Medicaid plans"
+  },
+  "610279": {
+    "pbm": "OptumRx",
+    "pcns": ["9999", "CONTRAC", "7777"],
+    "line_of_business": "UHC Employer & Individual",
+    "notes": "Multiple PCNs depending on claim type"
+  },
+  "610127": {
+    "pbm": "OptumRx",
+    "pcns": [],
+    "line_of_business": "Wrap COB",
+    "notes": "Coordination-of-Benefits"
+  },
+  "610011": {
+    "pbm": "OptumRx",
+    "pcns": ["HEAMEDD", "HEAUMEDD", "HPHCMEDD", "CTRXMEDD"],
+    "line_of_business": "Medicare (MA/MAPD)",
+    "notes": "Medicare-only BIN"
+  },
+  "013170": {
+    "pbm": "OptumRx",
+    "pcns": [],
+    "line_of_business": "Seniorscript/Catamaran Medicare",
+    "notes": "MA-only line"
+  },
+  "021692": {
+    "pbm": "OptumRx",
+    "pcns": ["CTRXMEDD"],
+    "line_of_business": "BCBS South Carolina Medicare",
+    "notes": "Medicare MA-only line"
+  },
+  "022576": {
+    "pbm": "OptumRx",
+    "pcns": ["CTRXMEDD", "RXBKCMA"],
+    "line_of_business": "BCBS Kansas City MA & MAPD",
+    "notes": "Two PCNs depending on coverage"
+  },
+  "011222": {
+    "pbm": "Kaiser",
+    "pcns": ["GACMS"],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Multiple BIN/PCN combos"
+  },
+  "011214": {
+    "pbm": "Kaiser",
+    "pcns": ["HICMS"],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Multiple BIN/PCN combos"
+  },
+  "011859": {
+    "pbm": "Kaiser",
+    "pcns": ["MACMSA"],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Multiple BIN/PCN combos"
+  },
+  "011230": {
+    "pbm": "Kaiser",
+    "pcns": ["NWCMS"],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Multiple BIN/PCN combos"
+  },
+  "011842": {
+    "pbm": "Kaiser",
+    "pcns": ["SCCMS"],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Multiple BIN/PCN combos"
+  },
+  "011172": {
+    "pbm": "Kaiser",
+    "pcns": ["COCMS"],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Multiple BIN/PCN combos"
+  },
+  "011255": {
+    "pbm": "Kaiser",
+    "pcns": [],
+    "line_of_business": "Kaiser Medicare",
+    "notes": "Catch-all for Kaiser MA"
+  }
+}
