@@ -3,8 +3,6 @@ import os
 import pandas as pd
 from file_parser import parse_uploaded_file
 from bin_router import load_bin_map, get_pbm_info
-import pandas as pd
-
 
 st.set_page_config(page_title="PBM Appeal Submission Assistant", layout="wide")
 st.title("📤 PBM Appeal Submission Assistant")
@@ -29,34 +27,32 @@ if uploaded_file:
         st.error(f"❌ Parsing failed: {e}")
         st.stop()
 
-    # Display preview
+    # Display parsed content
     st.markdown("### 🧾 Parsed Data Preview")
     if isinstance(parsed_data, pd.DataFrame):
         st.dataframe(parsed_data.head(20))
     else:
         st.code("\n".join(parsed_data[:20]), language="text")
 
-    # Load BIN-to-PBM mapping
+    # Load BIN routing table
     try:
         bin_map = load_bin_map("bin_map.json")
     except Exception as e:
         st.error(f"❌ Failed to load BIN mapping: {e}")
         st.stop()
 
-st.markdown("### 🧠 BIN Routing Preview")
+    # Preview BIN routing only if DataFrame
+    st.markdown("### 🧠 BIN Routing Preview")
+    if isinstance(parsed_data, pd.DataFrame):
+        bin_column_name = next((col for col in parsed_data.columns if "bin" in str(col).lower()), None)
 
-if isinstance(parsed_data, pd.DataFrame):
-    bin_column_name = next((col for col in parsed_data.columns if "bin" in str(col).lower()), None)
-
-    if bin_column_name:
-        preview = parsed_data.dropna(subset=[bin_column_name]).head(5)
-        for i, row in preview.iterrows():
-            bin_val = row[bin_column_name]
-            pbm_info = get_pbm_info(bin_val, bin_map)
-            st.markdown(f"- BIN `{bin_val}` ➜ **{pbm_info['pbm']}** — {pbm_info['line_of_business']}")
+        if bin_column_name:
+            preview = parsed_data.dropna(subset=[bin_column_name]).head(5)
+            for i, row in preview.iterrows():
+                bin_val = row[bin_column_name]
+                pbm_info = get_pbm_info(bin_val, bin_map)
+                st.markdown(f"- BIN `{bin_val}` ➜ **{pbm_info['pbm']}** — {pbm_info['line_of_business']}")
+        else:
+            st.info("No BIN column detected.")
     else:
-        st.info("No BIN column detected.")
-else:
-    st.info("This file type is not structured for BIN routing preview.")
-
-
+        st.info("This file type is not structured for BIN routing preview.")
